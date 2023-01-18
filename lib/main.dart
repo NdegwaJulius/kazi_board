@@ -1,5 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:kazi_board/Models/barrel_exports.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -48,11 +49,12 @@ class MyApp extends StatelessWidget {
           }
           return MaterialApp(
             title: 'Kazi Board',
+            debugShowCheckedModeBanner: false,
             theme: ThemeData(
               scaffoldBackgroundColor: Colors.black,
               primarySwatch: Colors.blue,
             ),
-            home: const Scaffold(),
+            home: Login(),
           );
         });
   }
