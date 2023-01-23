@@ -1,4 +1,7 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import '../Models/barrel_exports.dart';
@@ -19,6 +22,8 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
       TextEditingController(text: '');
   final FocusNode _passFocusNode = FocusNode();
   bool _obscureText = true;
+  bool _isLoading = false;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
   final _loginFormKey = GlobalKey<FormState>();
 
   @override
@@ -49,6 +54,31 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
     _animationController.forward();
 
     super.initState();
+  }
+
+  void _submitFormOnLogin() async {
+    final isValid = _loginFormKey.currentState!.validate();
+    if (isValid) {
+      setState(() {
+        _isLoading = true;
+      });
+      try {
+        await _auth.signInWithEmailAndPassword(
+          email: _emailTextController.text.trim().toLowerCase(),
+          password: _passTextController.text.trim(),
+        );
+        Navigator.canPop(context) ? Navigator.pop(context) : null;
+      } catch (error) {
+        setState(() {
+          _isLoading = false;
+        });
+        GlobalMethod.showErrorDialog(error: error.toString(), ctx: context);
+        print('Error occured $error');
+      }
+    }
+    setState(() {
+      _isLoading = false;
+    });
   }
 
   @override
@@ -174,6 +204,33 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                                 fontSize: 17,
                                 fontStyle: FontStyle.italic,
                               ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        MaterialButton(
+                          onPressed: _submitFormOnLogin,
+                          color: Colors.cyan,
+                          elevation: 8,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(vertical: 14),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: const [
+                                Text(
+                                  'Login',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 20,
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
                         ),
