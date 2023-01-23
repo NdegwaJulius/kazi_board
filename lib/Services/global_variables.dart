@@ -1,2 +1,2 @@
 String loginUrlImage =
-    'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2070&q=80';
+    'https://www.cbreproperties.cz/storage/full-carousel/643e12f0-e421-8ac4-6a29-57bd7fb7b7b6.jpeg';

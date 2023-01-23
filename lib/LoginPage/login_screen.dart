@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 import '../Models/barrel_exports.dart';
+import '../Services/global_variables.dart';
 
 class Login extends StatefulWidget {
   @override
@@ -58,6 +59,20 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
             height: double.infinity,
             fit: BoxFit.cover,
             alignment: FractionalOffset(_animation.value, 0),
+          ),
+          Container(
+            color: Colors.black54,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 80),
+              child: ListView(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(left: 80, right: 80),
+                    child: Image.asset('assets/images/login.png'),
+                  ),
+                ],
+              ),
+            ),
           ),
         ],
       ),
