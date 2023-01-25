@@ -1,6 +1,9 @@
 import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:image_cropper/image_cropper.dart';
@@ -27,21 +30,30 @@ class _SignUpState extends State<SignUp> with TickerProviderStateMixin {
   final TextEditingController _companyAddressTextController =
       TextEditingController(text: '');
 
-  bool _obscureText = true;
-  final bool _isLoading = false;
-
   final FocusNode _emailFocusNode = FocusNode();
   final FocusNode _passFocusNode = FocusNode();
   final FocusNode _phoneNumberFocusNode = FocusNode();
   final FocusNode _addressFocusNode = FocusNode();
   final FocusNode _positionCPFocusNode = FocusNode();
-
   final _signUpFormKey = GlobalKey<FormState>();
+
+  bool _obscureText = true;
+  bool _isLoading = false;
+
+  String? imageUrl;
   File? imageFile;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
 
   @override
   void dispose() {
     _animationController.dispose();
+    _fullNameController.dispose();
+    _emailController.dispose();
+    _passTextController.dispose();
+    _phoneNumberTextController.dispose();
+    _emailFocusNode.dispose();
+    _passFocusNode.dispose();
+    _phoneNumberFocusNode.dispose();
     super.dispose();
   }
 
@@ -130,14 +142,14 @@ class _SignUpState extends State<SignUp> with TickerProviderStateMixin {
 
   void _getFromCamera() async {
     XFile? pickedImage =
-        await ImagePicker().pickImage(source: ImageSource.camera) as XFile?;
+        await ImagePicker().pickImage(source: ImageSource.camera);
     _cropImage(pickedImage!.path);
     Navigator.pop(context);
   }
 
   void _getFromGallery() async {
     XFile? pickedImage =
-        await ImagePicker().pickImage(source: ImageSource.gallery) as XFile?;
+        await ImagePicker().pickImage(source: ImageSource.gallery);
     _cropImage(pickedImage!.path);
     Navigator.pop(context);
   }
@@ -152,12 +164,60 @@ class _SignUpState extends State<SignUp> with TickerProviderStateMixin {
     }
   }
 
+  void _submitFormOnSignUp() async {
+    final isValid = _signUpFormKey.currentState!.validate();
+    if (isValid) {
+      if (imageFile == null) {
+        GlobalMethod.showErrorDialog(
+          error: 'Please pick an image',
+          ctx: context,
+        );
+        return;
+      }
+      setState(() {
+        _isLoading = true;
+      });
+      try {
+        await _auth.createUserWithEmailAndPassword(
+          email: _emailController.text.trim().toLowerCase(),
+          password: _passTextController.text.trim(),
+        );
+        final User? user = _auth.currentUser;
+        final _uid = user!.uid;
+        final ref = FirebaseStorage.instance
+            .ref()
+            .child('userImages')
+            .child('$_uid.jpg');
+        await ref.putFile(imageFile!);
+        imageUrl = await ref.getDownloadURL();
+        FirebaseFirestore.instance.collection('users').doc(_uid).set({
+          'id': _uid,
+          'name': _fullNameController.text,
+          'email': _emailController.text,
+          'userImage': imageUrl,
+          'phoneNumber': _phoneNumberTextController.text,
+          'location': _companyAddressTextController.text,
+          'createAt': Timestamp.now(),
+        });
+        Navigator.canPop(context) ? Navigator.of(context) : null;
+      } catch (error) {
+        setState(() {
+          _isLoading = false;
+        });
+        GlobalMethod.showErrorDialog(error: error.toString(), ctx: context);
+      }
+    }
+    setState(() {
+      _isLoading = false;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return Scaffold(
       body: Stack(
-        children: [
+        children: <Widget>[
           CachedNetworkImage(
             imageUrl: signUpUrlImage,
             placeholder: (context, url) => Image.asset(
@@ -185,7 +245,7 @@ class _SignUpState extends State<SignUp> with TickerProviderStateMixin {
                             _showImageDialog();
                           },
                           child: Padding(
-                            padding: EdgeInsets.all(8.0),
+                            padding: const EdgeInsets.all(8.0),
                             child: Container(
                               width: size.width * 0.24,
                               height: size.width * 0.24,
@@ -278,7 +338,7 @@ class _SignUpState extends State<SignUp> with TickerProviderStateMixin {
                         TextFormField(
                           textInputAction: TextInputAction.next,
                           onEditingComplete: () => FocusScope.of(context)
-                              .requestFocus(_positionCPFocusNode),
+                              .requestFocus(_addressFocusNode),
                           keyboardType: TextInputType.phone,
                           controller: _phoneNumberTextController,
                           //change it dynamically
@@ -310,7 +370,7 @@ class _SignUpState extends State<SignUp> with TickerProviderStateMixin {
                         TextFormField(
                           textInputAction: TextInputAction.next,
                           onEditingComplete: () => FocusScope.of(context)
-                              .requestFocus(_positionCPFocusNode),
+                              .requestFocus(_passFocusNode),
                           keyboardType: TextInputType.text,
                           controller: _companyAddressTextController,
                           //change it dynamically
@@ -341,8 +401,8 @@ class _SignUpState extends State<SignUp> with TickerProviderStateMixin {
                         ),
                         TextFormField(
                           textInputAction: TextInputAction.next,
-                          onEditingComplete: () =>
-                              FocusScope.of(context).requestFocus(),
+                          onEditingComplete: () => FocusScope.of(context)
+                              .requestFocus(_positionCPFocusNode),
                           keyboardType: TextInputType.visiblePassword,
                           controller: _passTextController,
                           obscureText: !_obscureText, //change it dynamically
@@ -395,6 +455,7 @@ class _SignUpState extends State<SignUp> with TickerProviderStateMixin {
                             : MaterialButton(
                                 onPressed: () {
                                   //create submitFormOnSignUp
+                                  _submitFormOnSignUp();
                                 },
                                 color: Colors.cyan,
                                 elevation: 8,
