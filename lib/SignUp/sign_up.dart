@@ -3,6 +3,8 @@ import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:image_cropper/image_cropper.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:kazi_board/Models/barrel_exports.dart';
 
 class SignUp extends StatefulWidget {
@@ -76,7 +78,8 @@ class _SignUpState extends State<SignUp> with TickerProviderStateMixin {
               children: [
                 InkWell(
                   onTap: () {
-                    //getFromCmera
+                    //getFromCamera
+                    _getFromCamera();
                   },
                   child: Row(
                     children: const [
@@ -99,6 +102,7 @@ class _SignUpState extends State<SignUp> with TickerProviderStateMixin {
                 InkWell(
                   onTap: () {
                     //getFromGallery
+                    _getFromGallery();
                   },
                   child: Row(
                     children: const [
@@ -122,6 +126,30 @@ class _SignUpState extends State<SignUp> with TickerProviderStateMixin {
             ),
           );
         });
+  }
+
+  void _getFromCamera() async {
+    XFile? pickedImage =
+        await ImagePicker().pickImage(source: ImageSource.camera) as XFile?;
+    _cropImage(pickedImage!.path);
+    Navigator.pop(context);
+  }
+
+  void _getFromGallery() async {
+    XFile? pickedImage =
+        await ImagePicker().pickImage(source: ImageSource.gallery) as XFile?;
+    _cropImage(pickedImage!.path);
+    Navigator.pop(context);
+  }
+
+  void _cropImage(filePath) async {
+    CroppedFile? croppedImage = await ImageCropper()
+        .cropImage(sourcePath: filePath, maxHeight: 1080, maxWidth: 1080);
+    if (croppedImage != null) {
+      setState(() {
+        imageFile = File(croppedImage.path);
+      });
+    }
   }
 
   @override
@@ -166,10 +194,10 @@ class _SignUpState extends State<SignUp> with TickerProviderStateMixin {
                                   width: 1,
                                   color: Colors.cyanAccent,
                                 ),
-                                borderRadius: BorderRadius.circular(100.0),
+                                borderRadius: BorderRadius.circular(5.0),
                               ),
                               child: ClipRRect(
-                                borderRadius: BorderRadius.circular(16),
+                                borderRadius: BorderRadius.circular(5),
                                 child: imageFile == null
                                     ? const Icon(
                                         Icons.camera_enhance_sharp,
