@@ -199,7 +199,7 @@ class _SignUpState extends State<SignUp> with TickerProviderStateMixin {
           'location': _companyAddressTextController.text,
           'createAt': Timestamp.now(),
         });
-        Navigator.canPop(context) ? Navigator.of(context) : null;
+        Navigator.canPop(context) ? Navigator.pop(context) : null;
       } catch (error) {
         setState(() {
           _isLoading = false;
