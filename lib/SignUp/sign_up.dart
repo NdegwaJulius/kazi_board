@@ -65,6 +65,65 @@ class _SignUpState extends State<SignUp> with TickerProviderStateMixin {
     super.initState();
   }
 
+  void _showImageDialog() {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: const Text('Please choose an Image'),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                InkWell(
+                  onTap: () {
+                    //getFromCmera
+                  },
+                  child: Row(
+                    children: const [
+                      Padding(
+                        padding: EdgeInsets.all(8),
+                        child: Icon(
+                          Icons.camera,
+                          color: Colors.purple,
+                        ),
+                      ),
+                      Text(
+                        'Camera',
+                        style: TextStyle(
+                          color: Colors.purple,
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+                InkWell(
+                  onTap: () {
+                    //getFromGallery
+                  },
+                  child: Row(
+                    children: const [
+                      Padding(
+                        padding: EdgeInsets.all(8),
+                        child: Icon(
+                          Icons.image,
+                          color: Colors.purple,
+                        ),
+                      ),
+                      Text(
+                        'Gallery',
+                        style: TextStyle(
+                          color: Colors.purple,
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          );
+        });
+  }
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -95,7 +154,7 @@ class _SignUpState extends State<SignUp> with TickerProviderStateMixin {
                       children: <Widget>[
                         GestureDetector(
                           onTap: () {
-                            //create  showImageDialog
+                            _showImageDialog();
                           },
                           child: Padding(
                             padding: EdgeInsets.all(8.0),
