@@ -145,9 +145,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                             ),
                           ),
                         ),
-                        const SizedBox(
-                          height: 5,
-                        ),
+                        const SizedBox(height: 5),
                         TextFormField(
                           textInputAction: TextInputAction.next,
                           focusNode: _passFocusNode,
