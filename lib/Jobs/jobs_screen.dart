@@ -1,6 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:kazi_board/States/user_state.dart';
 
 class JobScreen extends StatefulWidget {
   @override
@@ -11,18 +10,36 @@ class _JobScreenState extends State<JobScreen> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Kazi Board'),
+    return Container(
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
+          colors: [Colors.green, Colors.grey],
+          begin: Alignment.topRight,
+          end: Alignment.bottomLeft,
+          stops: [
+            0.1,
+            0.9,
+          ],
+        ),
       ),
-      body: ElevatedButton(
-        onPressed: () {
-          _auth.signOut();
-          Navigator.canPop(context) ? Navigator.pop(context) : null;
-          Navigator.pushReplacement(
-              context, MaterialPageRoute(builder: (_) => UserState()));
-        },
-        child: const Text('Logout'),
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
+        appBar: AppBar(
+          title: const Text('Kazi Board'),
+          flexibleSpace: Container(
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                colors: [Colors.green, Colors.grey],
+                begin: Alignment.topRight,
+                end: Alignment.bottomLeft,
+                stops: [
+                  0.1,
+                  0.9,
+                ],
+              ),
+            ),
+          ),
+        ),
       ),
     );
   }
