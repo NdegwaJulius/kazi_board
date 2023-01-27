@@ -161,7 +161,20 @@ class _ForgotPasswordState extends State<ForgotPassword>
                     ),
                   ),
                 ),
-
+                const SizedBox(
+                  height: 40,
+                ),
+                Center(
+                  child: Text(
+                    'Check your email after pressing Reset Now',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w600,
+                      fontStyle: FontStyle.italic,
+                      fontSize: 18,
+                    ),
+                  ),
+                ),
               ],
             ),
           )
