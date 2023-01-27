@@ -6,4 +6,5 @@ export 'package:kazi_board/Services/global_variables.dart';
 export 'package:kazi_board/SignUp/sign_up.dart';
 export 'package:kazi_board/States/user_state.dart';
 export 'package:kazi_board/firebase_options.dart';
+export 'package:firebase_auth/firebase_auth.dart';
 export 'package:kazi_board/main.dart';

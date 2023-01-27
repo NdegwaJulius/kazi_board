@@ -8,6 +8,10 @@ class JobScreen extends StatefulWidget {
 class _JobScreenState extends State<JobScreen> {
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Kazi Board'),
+      ),
+    );
   }
 }
