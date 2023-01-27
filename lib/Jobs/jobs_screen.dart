@@ -26,15 +26,16 @@ class _JobScreenState extends State<JobScreen> {
         backgroundColor: Colors.transparent,
         appBar: AppBar(
           title: const Text('Kazi Board'),
+          centerTitle: true,
           flexibleSpace: Container(
             decoration: const BoxDecoration(
               gradient: LinearGradient(
                 colors: [Colors.green, Colors.grey],
-                begin: Alignment.topRight,
-                end: Alignment.bottomLeft,
+                begin: Alignment.bottomLeft,
+                end: Alignment.topRight,
                 stops: [
-                  0.1,
-                  0.9,
+                  0.0,
+                  0.0,
                 ],
               ),
             ),
