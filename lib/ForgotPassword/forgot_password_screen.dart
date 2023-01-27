@@ -164,7 +164,7 @@ class _ForgotPasswordState extends State<ForgotPassword>
                 const SizedBox(
                   height: 40,
                 ),
-                Center(
+                const Center(
                   child: Text(
                     'Check your email after pressing Reset Now',
                     style: TextStyle(
